@@ -9,7 +9,19 @@
 
 #### Landing Page
 
-<img src="/src/assets/img/screenshots/home.jpg" alt="Landing Page" />
+<img src="/assets/landing-page.jpg" alt="Landing Page" />
+
+#### Login / Sign Up
+
+<img src="/assets/login.jpg" alt="Login / Sign Up" />
+
+#### Save a book after you log in!
+
+<img src="/assets/save.jpg" alt="Login / Sign Up" />
+
+#### View your books and delete them!
+
+<img src="/assets/saved.jpg" alt="Login / Sign Up" />
 
 ## <u> Challenge instructions:</u>
 
