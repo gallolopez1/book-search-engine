@@ -2,7 +2,7 @@
 
 ## Links
 
-- 🌎 [Live](_)
+- 🌎 [Live](https://pure-sands-10724.herokuapp.com/)
 - 💾 [Repo](https://github.com/gallolopez1/book-search-engine)
 
 # <u> App Preview</u>
