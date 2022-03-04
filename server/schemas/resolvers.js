@@ -12,16 +12,11 @@ const resolvers = {
       if (context.user) {
         const userData = await User.findOne({ _id: context.user._id })
           .select('__v -password')
-          .populate('savedBooks');
+          .populate('savedbooks');
 
         return userData
       }
       throw new AuthenticationError('Not logged in');
-    },
-    user: async (parent, { username }) => {
-      return User.findOne({ username })
-        .select('-__v -password')
-        .populate('savedBooks');
     }
   },
 
@@ -51,13 +46,13 @@ const resolvers = {
     },
     // save a book to a user's `savedBooks` field by adding it to the set (to prevent duplicates)
     // user comes from `req.user` created in the auth middleware function
-    saveBook: async (parent, { bookId }, context) => {
+    saveBook: async (parent, args, context) => {
       if (context.user) {
         const updateUser = await User.findOneAndUpdate(
           { _id: context.user._id },
-          { $addToSet: { savedBooks: bookId } },
+          { $push: { savedBooks: args } },
           { new: true, runValidators: true }
-        ).populate('savedBooks');
+        );
 
         return updateUser;
       }
@@ -65,11 +60,11 @@ const resolvers = {
       throw new AuthenticationError('You need to be logged in');
     },
     // remove a book from `savedBooks`
-    removeBook: async (parent, { bookId }) => {
+    removeBook: async (parent, { bookId }, context) => {
       if (context.user) {
         const updateUser = await User.findOneAndUpdate(
           { _id: context.user._id },
-          { $pull: { savedBooks: bookId } },
+          { $pull: { savedBooks: { bookId: bookId } } },
           { new: true }
         );
 

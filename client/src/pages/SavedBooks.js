@@ -1,25 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { Redirect } from 'react-router-dom';
 import { Jumbotron, Container, CardColumns, Card, Button } from 'react-bootstrap';
+
 import { useQuery, useMutation } from '@apollo/client';
 import { QUERY_ME } from '../utils/queries';
 import { REMOVE_BOOK } from '../utils/mutations';
-
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
 
-const SavedBooks = (props) => {
-  const { username: userParam } = useParams();
-
+const SavedBooks = () => {
+  const [userData, setUserData] = useState({});
   const [removeBook] = useMutation(REMOVE_BOOK);
-  const { loading, data } = useQuery(userParam ? QUERY_USER : QUERY_ME, {
-    variables: { username: userParam },
+  const { loading, data } = useQuery(QUERY_ME, {
+    variables: { userData: setUserData },
   });
 
-  const user = data?.me || data?.user || {};
+  const user = data?.me || {};
 
   // redirect to personal profile page if username is yours
-  if (Auth.loggedIn() && Auth.getProfile().data.username === userParam) {
-    return <Redirect to="/saved" />;
+  if (Auth.loggedIn() && Auth.getProfile().data.userData === setUserData) {
+    return <Redirect to="/profile" />;
   }
 
   if (loading) {
@@ -58,11 +58,6 @@ const SavedBooks = (props) => {
       console.error(err);
     }
   };
-
-  // if data isn't here yet, say so
-  if (!userDataLength) {
-    return <h2>LOADING...</h2>;
-  }
 
   return (
     <>
