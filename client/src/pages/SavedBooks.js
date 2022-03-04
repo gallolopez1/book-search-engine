@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Redirect } from 'react-router-dom';
 import { Jumbotron, Container, CardColumns, Card, Button } from 'react-bootstrap';
 
 import { useQuery, useMutation } from '@apollo/client';
@@ -9,30 +8,15 @@ import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
 
 const SavedBooks = () => {
-  const [userData, setUserData] = useState({});
+
   const [removeBook] = useMutation(REMOVE_BOOK);
-  const { loading, data } = useQuery(QUERY_ME, {
-    variables: { userData: setUserData },
-  });
+  const { loading, data } = useQuery(QUERY_ME);
 
-  const user = data?.me || {};
-
-  // redirect to personal profile page if username is yours
-  if (Auth.loggedIn() && Auth.getProfile().data.userData === setUserData) {
-    return <Redirect to="/profile" />;
-  }
+  const userData = data?.me || {};
+  console.log(userData);
 
   if (loading) {
     return <div>Loading...</div>;
-  }
-
-  if (!user?.username) {
-    return (
-      <h4>
-        You need to be logged in to see this. Use the navigation links above to
-        sign up or log in!
-      </h4>
-    );
   }
 
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
@@ -44,14 +28,9 @@ const SavedBooks = () => {
     }
 
     try {
-      const response = await removeBook(bookId, token);
-
-      if (!response.ok) {
-        throw new Error('something went wrong!');
-      }
-
-      const updatedUser = await response.json();
-      setUserData(updatedUser);
+      await removeBook({
+        variables: { bookId: bookId }
+      });
       // upon success, remove book's id from localStorage
       removeBookId(bookId);
     } catch (err) {
